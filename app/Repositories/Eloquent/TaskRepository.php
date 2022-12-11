@@ -45,4 +45,19 @@ class TaskRepository extends EloquentBaseRepository implements TaskRepositoryInt
         }
         return $this->model::destroy($id);
     }
+
+    public function updateAssignor(int $taskId, ?int $assignorId = null): ?Model
+    {
+        $assignorId ??= Auth::id();
+        $model = $this->find($taskId);
+        if ($assignorId != $model->assignor_id){
+            $model->update(['assignor_id' => $assignorId]);
+        }
+        return $model->fresh();
+    }
+
+    public function changeStatus(int $taskId, TaskStatuses $status): bool
+    {
+       return (bool)$this->model->query()->where('id', $taskId)->update(['status' => $status->value]);
+    }
 }

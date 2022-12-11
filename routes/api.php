@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TaskAssignmentsController;
 use App\Http\Controllers\TasksController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,4 +25,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::apiResource('tasks', TasksController::class);
+
+    Route::prefix('task-assignments')->name('task-assignments.')->group(function () {
+        Route::post('/assign', [TaskAssignmentsController::class, 'assign'])->name('assign');
+    });
 });
