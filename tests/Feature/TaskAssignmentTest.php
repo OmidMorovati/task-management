@@ -69,4 +69,26 @@ class TaskAssignmentTest extends TestCase
         $this->actingAs(User::factory()->create())->post(route('task-assignments.assign'), $data)
             ->assertSessionHasErrors(['task_id']);
     }
+
+    /**
+     * @test
+     */
+    public function user_can_view_own_assignments()
+    {
+        $assignor  = User::factory()->create();
+        $assignee  = User::factory()->create();
+        $taskCount = $this->faker->numberBetween(10, 20);
+
+        Task::factory()
+            ->has(Assignment::factory()->state(function () use ($assignee) {
+                return ['assignee_id' => $assignee->id];
+            }))
+            ->count($taskCount)
+            ->create(['assignor_id' => $assignor->id]);
+
+        $this->actingAs($assignee)->get(route('task-assignments.own-assignments'))
+            ->assertSuccessful()
+            ->assertJsonCount($taskCount,'message')
+            ->assertJsonStructure(['message' => [['task', 'assignor']]]);
+    }
 }

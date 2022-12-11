@@ -22,4 +22,10 @@ class TaskAssignmentsController extends ApiController
             true => $this->respondItemCreated(AssignmentResource::make($data))
         };
     }
+
+    public function ownAssignments(): JsonResponse
+    {
+        $data =  $this->taskAssignmentService->ownAssignments();
+        return $this->respondSuccess(AssignmentResource::collection($data));
+    }
 }

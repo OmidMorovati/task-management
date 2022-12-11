@@ -37,4 +37,9 @@ class TaskAssignmentService
         }
         return $result;
     }
+
+    public function ownAssignments()
+    {
+        return $this->assignmentRepository->ownAssignments(['*'], ['task.assignor']);
+    }
 }

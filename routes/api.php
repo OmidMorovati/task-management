@@ -28,5 +28,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('task-assignments')->name('task-assignments.')->group(function () {
         Route::post('/assign', [TaskAssignmentsController::class, 'assign'])->name('assign');
+        Route::get('/own-assignments', [TaskAssignmentsController::class, 'ownAssignments'])
+            ->name('own-assignments');
     });
 });
