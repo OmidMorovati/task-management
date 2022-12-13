@@ -42,4 +42,9 @@ class TaskAssignmentService
     {
         return $this->assignmentRepository->ownAssignments(['*'], ['task.assignor']);
     }
+
+    public function approve(int $taskId): bool
+    {
+        return $this->assignmentRepository->approve($taskId);
+    }
 }

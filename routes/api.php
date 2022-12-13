@@ -31,6 +31,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/assign', [TaskAssignmentsController::class, 'assign'])->name('assign');
         Route::get('/own-assignments', [TaskAssignmentsController::class, 'ownAssignments'])
             ->name('own-assignments');
+        Route::patch('/approve', [TaskAssignmentsController::class, 'approve'])->name('approve');
     });
 
     Route::get('users', [UsersController::class, 'index'])->name('users.index');

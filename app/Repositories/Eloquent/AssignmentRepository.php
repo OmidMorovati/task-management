@@ -27,4 +27,9 @@ class AssignmentRepository extends EloquentBaseRepository implements AssignmentR
     {
         return $this->model->query()->with($relations)->where('assignee_id', Auth::id())->get($columns);
     }
+
+    public function approve(int $taskId): bool
+    {
+        return (bool)$this->model->query()->where('task_id', $taskId)->update(['is_approved' => true]);
+    }
 }

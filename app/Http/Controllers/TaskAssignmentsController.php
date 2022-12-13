@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Contracts\ApiController;
+use App\Http\Requests\Assignment\ApproveRequest;
 use App\Http\Requests\Assignment\AssignRequest;
 use App\Http\Resources\Task\AssignmentResource;
 use App\Services\TaskAssignmentService;
@@ -27,5 +28,14 @@ class TaskAssignmentsController extends ApiController
     {
         $data =  $this->taskAssignmentService->ownAssignments();
         return $this->respondSuccess(AssignmentResource::collection($data));
+    }
+
+    public function approve(ApproveRequest $request): JsonResponse
+    {
+        $data = $this->taskAssignmentService->approve($request->task_id);
+        return match ($data) {
+            false => $this->respondInternalError(),
+            true => $this->respondSuccess()
+        };
     }
 }

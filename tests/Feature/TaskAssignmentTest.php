@@ -88,7 +88,25 @@ class TaskAssignmentTest extends TestCase
 
         $this->actingAs($assignee)->get(route('task-assignments.own-assignments'))
             ->assertSuccessful()
-            ->assertJsonCount($taskCount,'message')
+            ->assertJsonCount($taskCount, 'message')
             ->assertJsonStructure(['message' => [['task', 'assignor']]]);
+    }
+
+    /**
+     * @test
+     */
+    public function user_can_approve_own_assignment()
+    {
+        $assignee = User::factory()->create();
+
+        $task = Task::factory()
+            ->has(Assignment::factory()->state(function () use ($assignee) {
+                return ['assignee_id' => $assignee->id];
+            }))
+            ->create();
+
+        $this->actingAs($assignee)->patch(route('task-assignments.approve'), ['task_id' => $task->id])
+            ->assertSuccessful();
+        $this->assertDatabaseHas(Assignment::class, ['task_id' => $task->id, 'is_approved' => true]);
     }
 }
