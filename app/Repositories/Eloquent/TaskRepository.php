@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Eloquent;
 
+use App\Models\Assignment;
 use App\Models\Enums\TaskStatuses;
 use App\Models\Task;
 use App\Repositories\Contracts\EloquentBaseRepository;
@@ -49,8 +50,8 @@ class TaskRepository extends EloquentBaseRepository implements TaskRepositoryInt
     public function updateAssignor(int $taskId, ?int $assignorId = null): ?Model
     {
         $assignorId ??= Auth::id();
-        $model = $this->find($taskId);
-        if ($assignorId != $model->assignor_id){
+        $model      = $this->find($taskId);
+        if ($assignorId != $model->assignor_id) {
             $model->update(['assignor_id' => $assignorId]);
         }
         return $model->fresh();
@@ -58,6 +59,19 @@ class TaskRepository extends EloquentBaseRepository implements TaskRepositoryInt
 
     public function changeStatus(int $taskId, TaskStatuses $status): bool
     {
-       return (bool)$this->model->query()->where('id', $taskId)->update(['status' => $status->value]);
+        return (bool)$this->model->query()->where('id', $taskId)->update(['status' => $status->value]);
+    }
+
+    public function updateDelayedTask(): int
+    {
+        return $this->model->query()
+            ->whereIn('id', Assignment::query()
+                ->select('task_id')
+                ->where('is_approved', false)
+                ->whereColumn('task_id', 'tasks.id')
+            )
+            ->whereNot('status',TaskStatuses::DELAYED->value)
+            ->where('deadline', '<', now())
+            ->update(['status' => TaskStatuses::DELAYED->value]);
     }
 }
