@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TaskAssignmentsController;
 use App\Http\Controllers\TasksController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,4 +32,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/own-assignments', [TaskAssignmentsController::class, 'ownAssignments'])
             ->name('own-assignments');
     });
+
+    Route::get('users', [UsersController::class, 'index'])->name('users.index');
 });
