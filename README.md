@@ -1,66 +1,178 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Task Management
+#### Simple task management application
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Requirements
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+#### PHP 8.1 | MySQL 8
+## Installation
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+After clone the repository follow these steps:
 
-## Learning Laravel
+Change the.env file according to your MySQL service parameters by running the following command:
+```bash
+cp .env.example .env
+```   
+Install packages :
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+composer install
+```
+Run migrations :
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```bash
+php artisan migrate
+```
+## Authentication APIs Reference
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#### Register
+```http
+POST /api/register
+```
 
-## Laravel Sponsors
+| Body | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `name`      | `string` | **Required** |
+| `password`      | `string` | **Required** , **At least 8 character**|
+| `email`      | `string` | **Required** |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+#### Login
 
-### Premium Partners
+```http
+POST /api/login
+```
+| Body | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `email` | `string` | **Required**|
+| `password` | `string` | **Required**|
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+#### Me
 
-## Contributing
+Show current user informarion
+```http
+GET /api/me
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Header | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `bearer` | **Required**|
 
-## Code of Conduct
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### Logout
 
-## Security Vulnerabilities
+```http
+POST /api/logout
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Header | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `bearer` | **Required**|
 
-## License
+## User Api refrence 
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### view all users
+
+view all users' names and emails
+```http
+GET /api/users
+```
+
+## Task CURD APIs Reference
+All of the below APIs need Authorization header with bearer token
+#### store a new task
+```http
+POST /api/task
+```
+
+| Body | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `title`      | `string` | **Required** |
+| `description`      | `string` | **Nullable**|
+| `deadline`      | `date` | **Required**  , **After today**|
+
+#### update a task
+
+```http
+PUT /api/task/{task}
+```
+| Body | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `title` | `string` | **Required**  , **Sometimes**|
+| `deadline` | `string` | **Nullable**|
+
+#### delete a task
+
+```http
+DELETE /api/task/{task}
+```
+
+
+#### show a task
+
+```http
+GET /api/tasks/{task}
+```
+
+
+#### view all task
+
+```http
+GET /api/tasks
+```
+## Task Assignment APIs Reference
+
+#### assign a task
+```http
+POST /api/task-assignments/assign
+```
+
+| Body | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `task_id`      | `string` | **Required** |
+| `assignee_email`      | `string` | **Required**|
+
+
+#### view all own assignments
+```http
+GET /api/task-assignments/own-assignments
+```
+
+#### approve a task
+```http
+POST /api/task-assignments/assign
+```
+
+| Body | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `task_id`      | `string` | **Required** |
+
+## Update Delayed Task
+To update delayed task statuses, follow these steps:
+
+Go to your terminal, ssh into your server, cd into your project and run this command.
+
+```bash
+crontab -e
+```
+This will open the server Crontab file, paste the code below into the file, save and then exit.
+
+```
+* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+```
+
+Do not forget to replace /path-to-your-project with the full path to the Artisan command of your Laravel Application.
+## Running Tests
+
+
+```bash
+php artisan test
+```
+
+  
+
+## Author
+
+- [@OmidMorovati](https://github.com/OmidMorovati)
+
+  
